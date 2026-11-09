@@ -1,5 +1,4 @@
-const { NotImplementedError } = require('../lib');
-// const { ListNode } = require('../extensions/list-node.js');
+const { ListNode } = require('../extensions/list-node.js');
 
 /**
  * Implement the Queue with a given interface via linked list (use ListNode extension above).
@@ -13,19 +12,48 @@ const { NotImplementedError } = require('../lib');
  * queue.getUnderlyingList() // returns { value: 3, next: null }
  */
 class Queue {
+  #head = null;
+  #tail = null;
+
   getUnderlyingList() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+    // The tests compare with plain objects via deepStrictEqual, which also
+    // checks prototypes, so ListNode instances are copied to plain objects.
+    const dummy = { next: null };
+    let tail = dummy;
+
+    for (let node = this.#head; node; node = node.next) {
+      tail.next = { value: node.value, next: null };
+      tail = tail.next;
+    }
+
+    return dummy.next;
   }
 
-  enqueue(/* value */) {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+  enqueue(value) {
+    const node = new ListNode(value);
+
+    if (this.#tail) {
+      this.#tail.next = node;
+    } else {
+      this.#head = node;
+    }
+
+    this.#tail = node;
   }
 
   dequeue() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+    if (!this.#head) {
+      return undefined;
+    }
+
+    const { value, next } = this.#head;
+    this.#head = next;
+
+    if (!this.#head) {
+      this.#tail = null;
+    }
+
+    return value;
   }
 }
 
